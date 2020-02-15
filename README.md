@@ -1,2 +1,0 @@
-# mylists
-Created with CodeSandbox
