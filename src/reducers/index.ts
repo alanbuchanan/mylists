@@ -29,6 +29,9 @@ export const cardsReducer = (
       ];
       return reordered;
 
+    case 'SET':
+      return action.payload.newState;
+
     default:
       return state;
   }

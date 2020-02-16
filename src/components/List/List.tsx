@@ -36,23 +36,6 @@ const List: FunctionComponent<IListProps> = ({
   listsDispatch,
 }) => {
   const [isEditingName, setEditingName] = useState(false);
-  const onDragEnd = useCallback(
-    result => {
-      // dropped outside the list
-      if (!result.destination) {
-        return;
-      }
-
-      const items: any = reorder<ICard>(
-        [...cards],
-        result.source.index,
-        result.destination.index,
-      );
-
-      updateCardsAfterReorder(items, list.id);
-    },
-    [cards],
-  );
 
   const getItemStyle = (
     isDragging: boolean,
@@ -70,6 +53,7 @@ const List: FunctionComponent<IListProps> = ({
   const getListStyle = (isDraggingOver: boolean) => ({
     background: 'rgb(235, 236, 240)',
     width: 250,
+    minHeight: 100,
   });
 
   const handleNameChange = (evt: any) => {
@@ -81,89 +65,87 @@ const List: FunctionComponent<IListProps> = ({
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="droppable-1">
-        {(provided, snapshot) => (
-          <Container
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-            style={getListStyle(snapshot.isDraggingOver)}
-          >
-            <Header>
-              {isEditingName ? (
-                <input
-                  type="text"
-                  defaultValue={list.listTitle}
-                  onChange={handleNameChange}
-                  onBlur={() => setEditingName(false)}
-                  onKeyPress={evt => {
-                    if (evt.key === 'Enter') {
-                      setEditingName(false);
-                    }
-                  }}
-                />
-              ) : (
-                <Title onClick={() => setEditingName(true)}>
-                  {list.listTitle}
-                </Title>
-              )}
-              <CloseButton
-                onClick={() =>
-                  listsDispatch({
-                    type: 'REMOVE',
-                    payload: { id: list.id },
-                  })
-                }
-              >
-                &times;
-              </CloseButton>
-            </Header>
-            {cards.map((post: ICard, index: number) => (
-              <Draggable
-                key={post.id}
-                index={index}
-                draggableId={`draggable-${post.id}`}
-              >
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    style={getItemStyle(
-                      snapshot.isDragging,
-                      provided.draggableProps.style,
-                    )}
-                  >
-                    <Card
-                      key={post.id}
-                      text={post.text}
-                      id={post.id}
-                      listId={list.id}
-                      cardsDispatch={cardsDispatch}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-            <AddCardButton
-              onClick={evt =>
-                cardsDispatch({
-                  type: 'ADD',
-                  payload: {
-                    listId: list.id,
-                    text: 'new item',
-                    id: uuidv1(),
-                  },
+    <Droppable droppableId={list.id}>
+      {(provided, snapshot) => (
+        <Container
+          {...provided.droppableProps}
+          ref={provided.innerRef}
+          style={getListStyle(snapshot.isDraggingOver)}
+        >
+          <Header>
+            {isEditingName ? (
+              <input
+                type="text"
+                defaultValue={list.listTitle}
+                onChange={handleNameChange}
+                onBlur={() => setEditingName(false)}
+                onKeyPress={evt => {
+                  if (evt.key === 'Enter') {
+                    setEditingName(false);
+                  }
+                }}
+              />
+            ) : (
+              <Title onClick={() => setEditingName(true)}>
+                {list.listTitle}
+              </Title>
+            )}
+            <CloseButton
+              onClick={() =>
+                listsDispatch({
+                  type: 'REMOVE',
+                  payload: { id: list.id },
                 })
               }
             >
-              + Add a card
-            </AddCardButton>
-          </Container>
-        )}
-      </Droppable>
-    </DragDropContext>
+              &times;
+            </CloseButton>
+          </Header>
+          {cards.map((post: ICard, index: number) => (
+            <Draggable
+              key={post.id}
+              index={index}
+              draggableId={`draggable-${post.id}`}
+            >
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  style={getItemStyle(
+                    snapshot.isDragging,
+                    provided.draggableProps.style,
+                  )}
+                >
+                  <Card
+                    key={post.id}
+                    text={post.text}
+                    id={post.id}
+                    listId={list.id}
+                    cardsDispatch={cardsDispatch}
+                  />
+                </div>
+              )}
+            </Draggable>
+          ))}
+          {provided.placeholder}
+          <AddCardButton
+            onClick={evt =>
+              cardsDispatch({
+                type: 'ADD',
+                payload: {
+                  listId: list.id,
+                  text: 'new item',
+                  id: uuidv1(),
+                },
+              })
+            }
+          >
+            + Add a card
+          </AddCardButton>
+        </Container>
+      )}
+    </Droppable>
   );
 };
 
