@@ -8,6 +8,13 @@ export const Container = styled.div`
   box-sizing: border-box;
 `;
 
+export const Header = styled.header`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 export const Title = styled.div``;
 
+export const CloseButton = styled.button``;
 export const AddCardButton = styled.button``;

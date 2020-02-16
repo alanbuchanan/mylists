@@ -1,12 +1,11 @@
 import React, { FunctionComponent, useState } from 'react';
 import { Container, Left, Right } from './Card.styles';
-// import ls, { get, set } from 'local-storage';
 
 interface ICard {
   text: string;
   id: string;
   listId: string;
-  deleteCard: (listId: string, id: string) => void;
+  deleteCard: (id: string) => void;
   editCard: (id: string, value: string) => void;
 }
 
@@ -20,7 +19,7 @@ const Card: FunctionComponent<ICard> = ({
   const [isEdit, setIsEdit] = useState(false);
   const [editValue, setEditValue] = useState(text);
   const onDeleteClick = () => {
-    deleteCard(listId, id);
+    deleteCard(id);
   };
 
   const onEditClick = (evt: any, id: string) => {

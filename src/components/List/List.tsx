@@ -1,7 +1,13 @@
 import React, { FunctionComponent, useCallback } from 'react';
-import { Container, Title, AddCardButton } from './List.styles';
+import {
+  Container,
+  Header,
+  CloseButton,
+  Title,
+  AddCardButton,
+} from './List.styles';
 import Card from '../Card/Card';
-import nextId from 'react-id-generator';
+import uuidv1 from 'uuid/v1';
 import {
   DragDropContext,
   Droppable,
@@ -16,7 +22,8 @@ interface IListProps {
   updateCardsAfterReorder: any;
   handleAddCard: (listId: string, text: string, id: string) => void;
   handleEditCard: (id: string, value: string) => void;
-  handleRemoveCard: (listId: string, id: string) => void;
+  handleRemoveCard: (id: string) => void;
+  handleRemoveList: (listId: string) => void;
 }
 
 const List: FunctionComponent<IListProps> = ({
@@ -26,6 +33,7 @@ const List: FunctionComponent<IListProps> = ({
   handleAddCard,
   handleEditCard,
   handleRemoveCard,
+  handleRemoveList,
 }) => {
   const onDragEnd = useCallback(
     result => {
@@ -70,7 +78,12 @@ const List: FunctionComponent<IListProps> = ({
             ref={provided.innerRef}
             style={getListStyle(snapshot.isDraggingOver)}
           >
-            <Title>{list.listTitle}</Title>
+            <Header>
+              <Title>{list.listTitle}</Title>
+              <CloseButton onClick={() => handleRemoveList(list.id)}>
+                &times;
+              </CloseButton>
+            </Header>
             {cards.map((post: ICard, index: number) => (
               <Draggable
                 key={post.id}
@@ -102,7 +115,7 @@ const List: FunctionComponent<IListProps> = ({
             {provided.placeholder}
             <AddCardButton
               onClick={evt =>
-                handleAddCard(list.id, 'test', nextId())
+                handleAddCard(list.id, 'test', uuidv1())
               }
             >
               Add a card

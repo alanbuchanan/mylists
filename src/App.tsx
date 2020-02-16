@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import List from './components/List/List';
-import Card from './components/Card/Card';
-import nextId from 'react-id-generator';
 import { CirclePicker } from 'react-color';
 import { IList, ICard } from './models';
 import ls from 'local-storage';
+import uuidv1 from 'uuid/v1';
 import { Container, MenuButton, Lists } from './App.styles';
 import './styles.css';
 
@@ -19,15 +18,15 @@ export default function App() {
 
   const initialCards = [
     {
-      id: nextId(),
+      id: uuidv1(),
       text: 'kwefnofwwefwe',
       listId: 'id0',
     },
   ];
 
-  const listsFromLs = ls.get('lists');
-  const cardsFromLs = ls.get('cards');
-  console.log(listsFromLs);
+  const listsFromLs = ls.get<IList[]>('lists');
+  const cardsFromLs = ls.get<ICard[]>('cards');
+  const bgColorFromLs = ls.get<string>('bgColor');
 
   const [lists, setLists] = useState<IList[]>(
     listsFromLs ? listsFromLs : initialLists,
@@ -35,7 +34,9 @@ export default function App() {
   const [cards, setCards] = useState<ICard[]>(
     cardsFromLs ? cardsFromLs : initialCards,
   );
-  const [bgColor, setBgColor] = useState('#fff');
+  const [bgColor, setBgColor] = useState(
+    bgColorFromLs ? bgColorFromLs : '#fff',
+  );
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleAddCard = (
@@ -45,10 +46,10 @@ export default function App() {
   ) => {
     const newCards = [...cards, { listId, text, id }];
     setCards(newCards);
-    ls.set('cards', newCards);
+    ls.set<ICard[]>('cards', newCards);
   };
 
-  const handleRemoveCard = (listId: string, id: string) => {
+  const handleRemoveCard = (id: string) => {
     setCards(cards.filter(card => card.id !== id));
   };
 
@@ -61,18 +62,26 @@ export default function App() {
     setCards(cardsCopy);
   };
 
-  const handleChangeComplete = (color: { hex: string }) => {
+  const handleRemoveList = (id: string) => {
+    const newLists = lists.filter(list => list.id !== id);
+    setLists(newLists);
+  };
+
+  const handleBgColorChange = (color: { hex: string }) => {
     setBgColor(color.hex);
+    ls.set<string>('bgColor', color.hex);
   };
 
   const updateCardsAfterReorder = (
     reorderedCards: ICard[],
     listId: string,
   ) => {
-    setCards([
+    const newCards = [
       ...cards.filter(card => card.listId !== listId),
       ...reorderedCards,
-    ]);
+    ];
+    setCards(newCards);
+    ls.set<ICard[]>('cards', newCards);
   };
 
   return (
@@ -84,7 +93,7 @@ export default function App() {
         {sidebarOpen && (
           <CirclePicker
             color={bgColor}
-            onChangeComplete={handleChangeComplete}
+            onChangeComplete={handleBgColorChange}
           />
         )}
       </div>
@@ -98,6 +107,7 @@ export default function App() {
             handleAddCard={handleAddCard}
             handleEditCard={handleEditCard}
             handleRemoveCard={handleRemoveCard}
+            handleRemoveList={handleRemoveList}
           />
         ))}
         <button
@@ -105,7 +115,7 @@ export default function App() {
             setLists([
               ...lists,
               {
-                id: nextId(),
+                id: uuidv1(),
                 indexForDrag: 0,
                 listTitle: 'new list',
               },
