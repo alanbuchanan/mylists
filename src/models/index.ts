@@ -6,6 +6,5 @@ export interface ICard {
 
 export interface IList {
   id: string;
-  indexForDrag: number;
   listTitle: string;
 }

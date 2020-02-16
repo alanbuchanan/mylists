@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import List from './components/List/List';
+import { cardsReducer, listsReducer } from './reducers';
 import { CirclePicker } from 'react-color';
 import { IList, ICard } from './models';
 import ls from 'local-storage';
@@ -8,15 +9,14 @@ import { Container, MenuButton, Lists } from './App.styles';
 import './styles.css';
 
 export default function App() {
-  const initialLists = [
+  const initialLists: IList[] = [
     {
       id: 'id0',
-      indexForDrag: 0,
       listTitle: 'wfoiefmowie',
     },
   ];
 
-  const initialCards = [
+  const initialCards: ICard[] = [
     {
       id: uuidv1(),
       text: 'kwefnofwwefwe',
@@ -28,44 +28,35 @@ export default function App() {
   const cardsFromLs = ls.get<ICard[]>('cards');
   const bgColorFromLs = ls.get<string>('bgColor');
 
-  const [lists, setLists] = useState<IList[]>(
-    listsFromLs ? listsFromLs : initialLists,
-  );
-  const [cards, setCards] = useState<ICard[]>(
-    cardsFromLs ? cardsFromLs : initialCards,
-  );
+  // const [lists, setLists] = useState<IList[]>(
+  //   listsFromLs ? listsFromLs : initialLists,
+  // );
+
   const [bgColor, setBgColor] = useState(
-    bgColorFromLs ? bgColorFromLs : '#fff',
+    bgColorFromLs ? bgColorFromLs : 'dodgerblue',
   );
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const handleAddCard = (
-    listId: string,
-    text: string,
-    id: string,
-  ) => {
-    const newCards = [...cards, { listId, text, id }];
-    setCards(newCards);
-    ls.set<ICard[]>('cards', newCards);
-  };
+  const [cards, cardsDispatch] = useReducer(
+    cardsReducer,
+    cardsFromLs ? cardsFromLs : initialCards,
+  );
 
-  const handleRemoveCard = (id: string) => {
-    setCards(cards.filter(card => card.id !== id));
-  };
+  const [lists, listsDispatch] = useReducer(
+    listsReducer,
+    listsFromLs ? listsFromLs : initialLists,
+  );
 
-  const handleEditCard = (id: string, value: string) => {
-    const cardsCopy = [...cards];
-    const foundCard = cardsCopy.find(card => card.id === id);
-    if (foundCard) {
-      foundCard.text = value;
-    }
-    setCards(cardsCopy);
-  };
+  useEffect(() => {
+    ls.set<ICard[]>('cards', cards);
+    ls.set<IList[]>('lists', lists);
+    console.log('cards or lists changed');
+  }, [cards, lists]);
 
-  const handleRemoveList = (id: string) => {
-    const newLists = lists.filter(list => list.id !== id);
-    setLists(newLists);
-  };
+  // const handleRemoveList = (id: string) => {
+  //   const newLists = lists.filter(list => list.id !== id);
+  //   setLists(newLists);
+  // };
 
   const handleBgColorChange = (color: { hex: string }) => {
     setBgColor(color.hex);
@@ -76,12 +67,10 @@ export default function App() {
     reorderedCards: ICard[],
     listId: string,
   ) => {
-    const newCards = [
-      ...cards.filter(card => card.listId !== listId),
-      ...reorderedCards,
-    ];
-    setCards(newCards);
-    ls.set<ICard[]>('cards', newCards);
+    cardsDispatch({
+      type: 'REORDER',
+      payload: { listId, reorderedCards },
+    });
   };
 
   return (
@@ -104,23 +93,20 @@ export default function App() {
             list={list}
             cards={cards.filter(card => card.listId === list.id)}
             updateCardsAfterReorder={updateCardsAfterReorder}
-            handleAddCard={handleAddCard}
-            handleEditCard={handleEditCard}
-            handleRemoveCard={handleRemoveCard}
-            handleRemoveList={handleRemoveList}
+            cardsDispatch={cardsDispatch}
+            listsDispatch={listsDispatch}
           />
         ))}
         <button
-          onClick={() =>
-            setLists([
-              ...lists,
-              {
+          onClick={() => {
+            listsDispatch({
+              type: 'ADD',
+              payload: {
                 id: uuidv1(),
-                indexForDrag: 0,
                 listTitle: 'new list',
               },
-            ])
-          }
+            });
+          }}
         >
           New list
         </button>
@@ -138,6 +124,7 @@ export default function App() {
 // Animations
 // Persist to storage - db - automatically copy state?
 // Unit tests
+// When list deleted, delete all cards with that listId, otherwise loads of cards hang around in localstorage
 
 // [
 //   {

@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  width: 200px;
-  background: lightgrey;
-  border: 1px solid grey;
+  min-width: 250px;
   padding: 5px;
   box-sizing: border-box;
+  margin-right: 5px;
+  border-radius: 5px;
 `;
 
 export const Header = styled.header`

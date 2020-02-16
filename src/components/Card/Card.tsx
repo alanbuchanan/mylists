@@ -5,21 +5,19 @@ interface ICard {
   text: string;
   id: string;
   listId: string;
-  deleteCard: (id: string) => void;
-  editCard: (id: string, value: string) => void;
+  cardsDispatch: any;
 }
 
 const Card: FunctionComponent<ICard> = ({
   text,
   id,
-  deleteCard,
+  cardsDispatch,
   listId,
-  editCard,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [editValue, setEditValue] = useState(text);
   const onDeleteClick = () => {
-    deleteCard(id);
+    cardsDispatch({ type: 'REMOVE', payload: { id } });
   };
 
   const onEditClick = (evt: any, id: string) => {
@@ -28,7 +26,7 @@ const Card: FunctionComponent<ICard> = ({
 
   const handleSaveClick = () => {
     setIsEdit(false);
-    editCard(id, editValue);
+    cardsDispatch({ type: 'EDIT', payload: { id, editValue } });
   };
   return (
     <Container>

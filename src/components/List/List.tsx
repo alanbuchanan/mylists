@@ -20,20 +20,16 @@ interface IListProps {
   list: IList;
   cards: ICard[];
   updateCardsAfterReorder: any;
-  handleAddCard: (listId: string, text: string, id: string) => void;
-  handleEditCard: (id: string, value: string) => void;
-  handleRemoveCard: (id: string) => void;
-  handleRemoveList: (listId: string) => void;
+  cardsDispatch: any;
+  listsDispatch: any;
 }
 
 const List: FunctionComponent<IListProps> = ({
   list,
   cards,
   updateCardsAfterReorder,
-  handleAddCard,
-  handleEditCard,
-  handleRemoveCard,
-  handleRemoveList,
+  cardsDispatch,
+  listsDispatch,
 }) => {
   const onDragEnd = useCallback(
     result => {
@@ -65,7 +61,7 @@ const List: FunctionComponent<IListProps> = ({
   });
 
   const getListStyle = (isDraggingOver: boolean) => ({
-    background: isDraggingOver ? 'lightblue' : 'lightgrey',
+    background: isDraggingOver ? 'lightblue' : 'rgb(235, 236, 240)',
     width: 250,
   });
 
@@ -80,7 +76,14 @@ const List: FunctionComponent<IListProps> = ({
           >
             <Header>
               <Title>{list.listTitle}</Title>
-              <CloseButton onClick={() => handleRemoveList(list.id)}>
+              <CloseButton
+                onClick={() =>
+                  listsDispatch({
+                    type: 'REMOVE',
+                    payload: { id: list.id },
+                  })
+                }
+              >
                 &times;
               </CloseButton>
             </Header>
@@ -105,8 +108,7 @@ const List: FunctionComponent<IListProps> = ({
                       text={post.text}
                       id={post.id}
                       listId={list.id}
-                      deleteCard={handleRemoveCard}
-                      editCard={handleEditCard}
+                      cardsDispatch={cardsDispatch}
                     />
                   </div>
                 )}
@@ -115,7 +117,14 @@ const List: FunctionComponent<IListProps> = ({
             {provided.placeholder}
             <AddCardButton
               onClick={evt =>
-                handleAddCard(list.id, 'test', uuidv1())
+                cardsDispatch({
+                  type: 'ADD',
+                  payload: {
+                    listId: list.id,
+                    text: 'te3st',
+                    id: uuidv1(),
+                  },
+                })
               }
             >
               Add a card
