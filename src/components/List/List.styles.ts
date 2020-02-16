@@ -6,6 +6,10 @@ export const Container = styled.div`
   box-sizing: border-box;
   margin-left: 5px;
   border-radius: 5px;
+  background: white;
+  background: rgb(235, 236, 240);
+  width: 250px;
+  min-height: 100px;
 `;
 
 export const Header = styled.header`
@@ -19,3 +23,4 @@ export const Title = styled.div``;
 
 export const CloseButton = styled.button``;
 export const AddCardButton = styled.button``;
+export const DragContainer = styled.div``;

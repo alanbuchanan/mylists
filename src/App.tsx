@@ -8,11 +8,7 @@ import ls from 'local-storage';
 import uuidv1 from 'uuid/v1';
 import groupBy from 'lodash.groupby';
 import List from './components/List/List';
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-} from 'react-beautiful-dnd';
+import { DragDropContext } from 'react-beautiful-dnd';
 import Options from './components/Options/Options';
 import { cardsReducer, listsReducer } from './reducers';
 import { IList, ICard } from './models';
@@ -68,22 +64,6 @@ export default function App() {
         return;
       }
 
-      const targetListId = result.destination.droppableId;
-      console.log('result', result);
-      console.log('result.source.index', result.source.index);
-      console.log(
-        'result.source.droppableId',
-        result.source.droppableId,
-      );
-      console.log(
-        'result.destination.index',
-        result.destination.index,
-      );
-      console.log(
-        'result.destination.droppableId',
-        result.destination.droppableId,
-      );
-
       const itemsSplitByListIds = groupBy(cards, (card: any) => {
         return card.listId;
       });
@@ -116,42 +96,25 @@ export default function App() {
           ...list.slice(0, index),
           ...list.slice(index + 1),
         ];
-        // const addByIndex = (
-        //   list: any[],
-        //   index: number,
-        //   item: any,
-        // ) => [
-        //   ...list.slice(0, index + 1),
-        //   item,
-        //   ...list.slice(index + 1),
-        // ];
+
         const source = cards.filter(
-          card => card.listId === result.source.droppableId,
+          (card: ICard) => card.listId === result.source.droppableId,
         );
         const sourceWithoutDragged = removeByIndex(
           source,
           result.source.index,
         );
-        console.log('sourceWithoutDragged:', sourceWithoutDragged);
+
         const target = cards.filter(
-          card => card.listId === result.destination.droppableId,
+          (card: ICard) =>
+            card.listId === result.destination.droppableId,
         );
-        console.log('t', target);
-        console.log(
-          'source[result.source.index]',
-          source[result.source.index],
-        );
-        // const targetWithDragged = addByIndex(
-        //   target,
-        //   source[result.source.index],
-        //   result.destination.index,
-        // );
 
         const itemWithNewId = {
           ...source[result.source.index],
           listId: result.destination.droppableId,
         };
-        console.log('itemWithNewId', itemWithNewId);
+
         target.splice(result.destination.index, 0, itemWithNewId);
 
         const filteredCards = cards.filter(
@@ -159,8 +122,6 @@ export default function App() {
             card.listId !== result.source.droppableId &&
             card.listId !== result.destination.droppableId,
         );
-
-        console.log('fc:', filteredCards);
 
         cardsDispatch({
           type: 'SET',
@@ -172,8 +133,6 @@ export default function App() {
             ],
           },
         });
-        console.log('sourceWithoutDragged:', sourceWithoutDragged);
-        console.log('target:', target);
       }
     },
     [cards],
