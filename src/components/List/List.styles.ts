@@ -13,6 +13,7 @@ export const Header = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 5px;
 `;
 export const Title = styled.div``;
 
