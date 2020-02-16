@@ -5,20 +5,22 @@ import { Container, Left, Right } from './Card.styles';
 interface ICard {
   text: string;
   id: string;
-  deleteCard: (id: string) => void;
+  listId: string;
+  deleteCard: (listId: string, id: string) => void;
   editCard: (id: string, value: string) => void;
 }
 
-const Post: FunctionComponent<ICard> = ({
+const Card: FunctionComponent<ICard> = ({
   text,
   id,
   deleteCard,
+  listId,
   editCard,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [editValue, setEditValue] = useState(text);
-  const onDeleteClick = (evt: any, id: string) => {
-    deleteCard(id);
+  const onDeleteClick = () => {
+    deleteCard(listId, id);
   };
 
   const onEditClick = (evt: any, id: string) => {
@@ -27,7 +29,6 @@ const Post: FunctionComponent<ICard> = ({
 
   const handleSaveClick = () => {
     setIsEdit(false);
-    console.log('fewofoe', editValue);
     editCard(id, editValue);
   };
   return (
@@ -49,10 +50,10 @@ const Post: FunctionComponent<ICard> = ({
         ) : (
           <div onClick={evt => onEditClick(evt, id)}>✎</div>
         )}
-        <div onClick={evt => onDeleteClick(evt, id)}>&times;</div>
+        <div onClick={evt => onDeleteClick()}>&times; {id}</div>
       </Right>
     </Container>
   );
 };
 
-export default Post;
+export default Card;

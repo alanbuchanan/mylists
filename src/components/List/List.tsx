@@ -1,10 +1,5 @@
-import React, {
-  FunctionComponent,
-  useState,
-  useCallback,
-} from 'react';
+import React, { FunctionComponent, useCallback } from 'react';
 import { Container, Title, AddCardButton } from './List.styles';
-import { ICard } from '../../models';
 import Card from '../Card/Card';
 import nextId from 'react-id-generator';
 import {
@@ -13,33 +8,25 @@ import {
   Draggable,
 } from 'react-beautiful-dnd';
 import { reorder } from '../../utils';
+import { IList, ICard } from '../../models';
 
-const Column: FunctionComponent = () => {
-  const initialCards = [
-    { id: nextId(), text: 'I am a post' },
-    { id: nextId(), text: 'So am I' },
-  ];
-  const [posts, setPosts] = useState<ICard[]>(initialCards);
+interface IListProps {
+  list: IList;
+  cards: ICard[];
+  updateCardsAfterReorder: any;
+  handleAddCard: (listId: string, text: string, id: string) => void;
+  handleEditCard: (id: string, value: string) => void;
+  handleRemoveCard: (listId: string, id: string) => void;
+}
 
-  const handleAddCard = () => {
-    setPosts([...posts, { id: nextId(), text: 'new post' }]);
-  };
-
-  const handleRemoveCard = (id: string) => {
-    setPosts(posts.filter(post => post.id !== id));
-  };
-
-  const handleEditCard = (id: string, value: string) => {
-    const postsCopy = [...posts];
-    postsCopy.map(post => {
-      if (post.id === id) {
-        post.text = value;
-      }
-      return post;
-    });
-    setPosts(postsCopy);
-  };
-
+const List: FunctionComponent<IListProps> = ({
+  list,
+  cards,
+  updateCardsAfterReorder,
+  handleAddCard,
+  handleEditCard,
+  handleRemoveCard,
+}) => {
   const onDragEnd = useCallback(
     result => {
       // dropped outside the list
@@ -48,14 +35,14 @@ const Column: FunctionComponent = () => {
       }
 
       const items: any = reorder<ICard>(
-        [...posts],
+        [...cards],
         result.source.index,
         result.destination.index,
       );
 
-      setPosts(items);
+      updateCardsAfterReorder(items, list.id);
     },
-    [posts],
+    [cards],
   );
 
   const getItemStyle = (
@@ -83,8 +70,8 @@ const Column: FunctionComponent = () => {
             ref={provided.innerRef}
             style={getListStyle(snapshot.isDraggingOver)}
           >
-            <Title>A title</Title>
-            {posts.map((post: ICard, index: number) => (
+            <Title>{list.listTitle}</Title>
+            {cards.map((post: ICard, index: number) => (
               <Draggable
                 key={post.id}
                 index={index}
@@ -104,6 +91,7 @@ const Column: FunctionComponent = () => {
                       key={post.id}
                       text={post.text}
                       id={post.id}
+                      listId={list.id}
                       deleteCard={handleRemoveCard}
                       editCard={handleEditCard}
                     />
@@ -112,7 +100,11 @@ const Column: FunctionComponent = () => {
               </Draggable>
             ))}
             {provided.placeholder}
-            <AddCardButton onClick={handleAddCard}>
+            <AddCardButton
+              onClick={evt =>
+                handleAddCard(list.id, 'test', nextId())
+              }
+            >
               Add a card
             </AddCardButton>
           </Container>
@@ -122,4 +114,4 @@ const Column: FunctionComponent = () => {
   );
 };
 
-export default Column;
+export default List;

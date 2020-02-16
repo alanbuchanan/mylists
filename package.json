@@ -11,10 +11,12 @@
   "dependencies": {
     "@types/local-storage": "1.4.0",
     "@types/react-beautiful-dnd": "12.1.1",
+    "@types/react-color": "3.0.1",
     "@types/styled-components": "4.4.3",
     "local-storage": "2.0.0",
     "react": "^16.12.0",
     "react-beautiful-dnd": "12.2.0",
+    "react-color": "2.18.0",
     "react-dom": "^16.12.0",
     "react-id-generator": "3.0.0",
     "react-scripts": "3.3.0",
