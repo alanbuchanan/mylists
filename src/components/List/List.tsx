@@ -1,4 +1,8 @@
-import React, { FunctionComponent, useCallback } from 'react';
+import React, {
+  useState,
+  FunctionComponent,
+  useCallback,
+} from 'react';
 import {
   Container,
   Header,
@@ -31,6 +35,7 @@ const List: FunctionComponent<IListProps> = ({
   cardsDispatch,
   listsDispatch,
 }) => {
+  const [isEditingName, setEditingName] = useState(false);
   const onDragEnd = useCallback(
     result => {
       // dropped outside the list
@@ -56,14 +61,24 @@ const List: FunctionComponent<IListProps> = ({
     background: 'white',
     padding: '10px',
     marginBottom: '5px',
+    borderRadius: '5px',
+    borderBottom: '1px solid rgb(178,185,197)',
 
     ...draggableStyle,
   });
 
   const getListStyle = (isDraggingOver: boolean) => ({
-    background: isDraggingOver ? 'lightblue' : 'rgb(235, 236, 240)',
+    background: 'rgb(235, 236, 240)',
     width: 250,
   });
+
+  const handleNameChange = (evt: any) => {
+    const { value } = evt.target;
+    listsDispatch({
+      type: 'UPDATE_NAME',
+      payload: { id: list.id, value },
+    });
+  };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -75,7 +90,23 @@ const List: FunctionComponent<IListProps> = ({
             style={getListStyle(snapshot.isDraggingOver)}
           >
             <Header>
-              <Title>{list.listTitle}</Title>
+              {isEditingName ? (
+                <input
+                  type="text"
+                  defaultValue={list.listTitle}
+                  onChange={handleNameChange}
+                  onBlur={() => setEditingName(false)}
+                  onKeyPress={evt => {
+                    if (evt.key === 'Enter') {
+                      setEditingName(false);
+                    }
+                  }}
+                />
+              ) : (
+                <Title onClick={() => setEditingName(true)}>
+                  {list.listTitle}
+                </Title>
+              )}
               <CloseButton
                 onClick={() =>
                   listsDispatch({
@@ -121,13 +152,13 @@ const List: FunctionComponent<IListProps> = ({
                   type: 'ADD',
                   payload: {
                     listId: list.id,
-                    text: 'te3st',
+                    text: 'new item',
                     id: uuidv1(),
                   },
                 })
               }
             >
-              Add a card
+              + Add a card
             </AddCardButton>
           </Container>
         )}

@@ -8,9 +8,14 @@ export const Container = styled.div<{ bgColor: string }>`
   font-family: sans-serif;
 `;
 
-export const MenuButton = styled.button``;
-
 export const Lists = styled.div`
   display: flex;
   align-items: flex-start;
+  margin-top: 40px;
+`;
+
+export const NewListButton = styled.button`
+  min-width: 250px;
+  background: rgba(255, 255, 255, 0.2) !important;
+  margin: 0 5px;
 `;

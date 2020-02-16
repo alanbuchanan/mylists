@@ -4,7 +4,7 @@ export const Container = styled.div`
   min-width: 250px;
   padding: 5px;
   box-sizing: border-box;
-  margin-right: 5px;
+  margin-left: 5px;
   border-radius: 5px;
 `;
 

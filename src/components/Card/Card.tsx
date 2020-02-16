@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
-import { Container, Left, Right } from './Card.styles';
+import { Container, Left, Right, SaveButton } from './Card.styles';
 
 interface ICard {
   text: string;
@@ -24,10 +24,14 @@ const Card: FunctionComponent<ICard> = ({
     setIsEdit(true);
   };
 
-  const handleSaveClick = () => {
-    setIsEdit(false);
-    cardsDispatch({ type: 'EDIT', payload: { id, editValue } });
+  const handleNameChange = (evt: any) => {
+    const { value } = evt.target;
+    cardsDispatch({
+      type: 'EDIT',
+      payload: { id, editValue: value },
+    });
   };
+
   return (
     <Container>
       <Left>
@@ -35,7 +39,13 @@ const Card: FunctionComponent<ICard> = ({
           <input
             type="text"
             defaultValue={text}
-            onChange={evt => setEditValue(evt.target.value)}
+            onChange={handleNameChange}
+            onBlur={() => setIsEdit(false)}
+            onKeyPress={evt => {
+              if (evt.key === 'Enter') {
+                setIsEdit(false);
+              }
+            }}
           />
         ) : (
           text
@@ -43,11 +53,15 @@ const Card: FunctionComponent<ICard> = ({
       </Left>
       <Right>
         {isEdit ? (
-          <button onClick={handleSaveClick}>save</button>
+          <SaveButton onClick={() => setIsEdit(false)}>
+            Save
+          </SaveButton>
         ) : (
-          <div onClick={evt => onEditClick(evt, id)}>✎</div>
+          <>
+            <button onClick={evt => onEditClick(evt, id)}>✎</button>
+            <button onClick={onDeleteClick}>&times;</button>
+          </>
         )}
-        <div onClick={evt => onDeleteClick()}>&times; {id}</div>
       </Right>
     </Container>
   );

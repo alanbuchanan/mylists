@@ -450,3 +450,17 @@ body,
 #root {
   height: 100%;
 }
+
+button {
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+}
+
+button:hover {
+  background: rgb(245, 245, 245);
+}
+
+input {
+  width: 100%;
+}

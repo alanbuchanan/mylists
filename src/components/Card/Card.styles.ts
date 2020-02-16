@@ -5,6 +5,7 @@ export const Container = styled.div`
   margin-top: 5px;
   display: flex;
   justify-content: space-between;
+  user-select: none;
 `;
 
 export const Left = styled.div`
@@ -14,4 +15,13 @@ export const Left = styled.div`
 export const Right = styled.div`
   margin-left: auto;
   display: flex;
+`;
+
+export const SaveButton = styled.button`
+  background: mediumseagreen;
+  color: white;
+
+  :hover {
+    background: lightseagreen;
+  }
 `;

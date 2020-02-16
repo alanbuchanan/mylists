@@ -1,41 +1,22 @@
 import React, { useState, useEffect, useReducer } from 'react';
-import List from './components/List/List';
-import { cardsReducer, listsReducer } from './reducers';
-import { CirclePicker } from 'react-color';
-import { IList, ICard } from './models';
 import ls from 'local-storage';
 import uuidv1 from 'uuid/v1';
-import { Container, MenuButton, Lists } from './App.styles';
+import List from './components/List/List';
+import Options from './components/Options/Options';
+import { cardsReducer, listsReducer } from './reducers';
+import { IList, ICard } from './models';
+import { initialCards, initialLists } from './utils';
+import { Container, Lists, NewListButton } from './App.styles';
 import './styles.css';
 
 export default function App() {
-  const initialLists: IList[] = [
-    {
-      id: 'id0',
-      listTitle: 'wfoiefmowie',
-    },
-  ];
-
-  const initialCards: ICard[] = [
-    {
-      id: uuidv1(),
-      text: 'kwefnofwwefwe',
-      listId: 'id0',
-    },
-  ];
-
   const listsFromLs = ls.get<IList[]>('lists');
   const cardsFromLs = ls.get<ICard[]>('cards');
   const bgColorFromLs = ls.get<string>('bgColor');
 
-  // const [lists, setLists] = useState<IList[]>(
-  //   listsFromLs ? listsFromLs : initialLists,
-  // );
-
   const [bgColor, setBgColor] = useState(
     bgColorFromLs ? bgColorFromLs : 'dodgerblue',
   );
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [cards, cardsDispatch] = useReducer(
     cardsReducer,
@@ -52,11 +33,6 @@ export default function App() {
     ls.set<IList[]>('lists', lists);
     console.log('cards or lists changed');
   }, [cards, lists]);
-
-  // const handleRemoveList = (id: string) => {
-  //   const newLists = lists.filter(list => list.id !== id);
-  //   setLists(newLists);
-  // };
 
   const handleBgColorChange = (color: { hex: string }) => {
     setBgColor(color.hex);
@@ -75,17 +51,8 @@ export default function App() {
 
   return (
     <Container bgColor={bgColor}>
-      <div>
-        <MenuButton onClick={() => setSidebarOpen(!sidebarOpen)}>
-          menu
-        </MenuButton>
-        {sidebarOpen && (
-          <CirclePicker
-            color={bgColor}
-            onChangeComplete={handleBgColorChange}
-          />
-        )}
-      </div>
+      <Options handleBgColorChange={handleBgColorChange} />
+
       <Lists>
         {lists.map((list: any) => (
           <List
@@ -97,7 +64,7 @@ export default function App() {
             listsDispatch={listsDispatch}
           />
         ))}
-        <button
+        <NewListButton
           onClick={() => {
             listsDispatch({
               type: 'ADD',
@@ -108,36 +75,28 @@ export default function App() {
             });
           }}
         >
-          New list
-        </button>
+          + New list
+        </NewListButton>
       </Lists>
     </Container>
   );
 }
 
-// Loading spinner
-// Make it work on a phone
-// refactor setPosts into useReducer - List.tsx
-// Remove anys
-// gitignore and readme
-
-// Animations
-// Persist to storage - db - automatically copy state?
-// Unit tests
+// basic functionality:
+// edit cards
+// edit list names
+//able to enter name when creating list
+//able to enter name when creating card
+// css
 // When list deleted, delete all cards with that listId, otherwise loads of cards hang around in localstorage
+// drag cards between lists
+// drag and drop lists
+// gitignore and readme
+// make components smaller, split into separate small components
+// work on menu
+// icons fo new list and card
+// draggable handle fix
 
-// [
-//   {
-//     indexForDrag: 2,
-//     listId: 23423,
-//     listTitle: 'wfoiefmowie',
-//     cards: [
-//       {
-//         id: 23,
-//         text: 'kwefnofwe'
-//       }
-//       ...
-//     ]
-//   }
-//   ...
-// ]
+// Unit tests
+// Remove anys
+// Animations

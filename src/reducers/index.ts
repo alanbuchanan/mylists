@@ -44,6 +44,15 @@ export const listsReducer = (
       return [...state, { id, listTitle }];
     case 'REMOVE':
       return state.filter(list => list.id !== id);
+
+    case 'UPDATE_NAME':
+      const listsCopy = [...state];
+      const { value } = action.payload;
+      const foundCard = listsCopy.find(card => card.id === id);
+      if (foundCard) {
+        foundCard.listTitle = value;
+      }
+      return listsCopy;
     default:
       return state;
   }
