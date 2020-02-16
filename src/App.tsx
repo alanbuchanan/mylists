@@ -19,16 +19,15 @@ export default function App() {
   );
 }
 
-// Columns
-// Posts
-// Drag and drop
-// Unit tests
-// Persist to storage - db - automatically copy state?
-// Animations
 // Loading spinner
 // Make it work on a phone
 // refactor setPosts into useReducer - List.tsx
 // Remove anys
+// gitignore and readme
+
+// Animations
+// Persist to storage - db - automatically copy state?
+// Unit tests
 
 // [
 //   {

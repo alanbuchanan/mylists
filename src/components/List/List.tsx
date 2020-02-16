@@ -62,13 +62,10 @@ const Column: FunctionComponent = () => {
     isDragging: boolean,
     draggableStyle: any,
   ) => ({
-    // some basic styles to make the items look a bit nicer
-    userSelect: 'none',
+    background: 'white',
+    padding: '10px',
+    marginBottom: '5px',
 
-    // change background colour if dragging
-    background: isDragging ? 'lightgreen' : 'grey',
-
-    // styles we need to apply on draggables
     ...draggableStyle,
   });
 
@@ -110,7 +107,6 @@ const Column: FunctionComponent = () => {
                       deleteCard={handleRemoveCard}
                       editCard={handleEditCard}
                     />
-                    >
                   </div>
                 )}
               </Draggable>

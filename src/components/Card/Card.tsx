@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
-import { Container } from './Card.styles';
+import { Container, Left, Right } from './Card.styles';
 // import ls, { get, set } from 'local-storage';
 
 interface ICard {
@@ -32,21 +32,25 @@ const Post: FunctionComponent<ICard> = ({
   };
   return (
     <Container>
-      {isEdit ? (
-        <input
-          type="text"
-          defaultValue={text}
-          onChange={evt => setEditValue(evt.target.value)}
-        />
-      ) : (
-        text
-      )}
-      {isEdit ? (
-        <button onClick={handleSaveClick}>save</button>
-      ) : (
-        <div onClick={evt => onEditClick(evt, id)}>✎</div>
-      )}
-      <div onClick={evt => onDeleteClick(evt, id)}>&times;</div>
+      <Left>
+        {isEdit ? (
+          <input
+            type="text"
+            defaultValue={text}
+            onChange={evt => setEditValue(evt.target.value)}
+          />
+        ) : (
+          text
+        )}
+      </Left>
+      <Right>
+        {isEdit ? (
+          <button onClick={handleSaveClick}>save</button>
+        ) : (
+          <div onClick={evt => onEditClick(evt, id)}>✎</div>
+        )}
+        <div onClick={evt => onDeleteClick(evt, id)}>&times;</div>
+      </Right>
     </Container>
   );
 };
