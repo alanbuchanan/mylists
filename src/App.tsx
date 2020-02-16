@@ -4,6 +4,7 @@ import Card from './components/Card/Card';
 import nextId from 'react-id-generator';
 import { CirclePicker } from 'react-color';
 import { IList, ICard } from './models';
+import ls from 'local-storage';
 import { Container, MenuButton, Lists } from './App.styles';
 import './styles.css';
 
@@ -24,8 +25,16 @@ export default function App() {
     },
   ];
 
-  const [lists, setLists] = useState<IList[]>(initialLists);
-  const [cards, setCards] = useState<ICard[]>(initialCards);
+  const listsFromLs = ls.get('lists');
+  const cardsFromLs = ls.get('cards');
+  console.log(listsFromLs);
+
+  const [lists, setLists] = useState<IList[]>(
+    listsFromLs ? listsFromLs : initialLists,
+  );
+  const [cards, setCards] = useState<ICard[]>(
+    cardsFromLs ? cardsFromLs : initialCards,
+  );
   const [bgColor, setBgColor] = useState('#fff');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -34,7 +43,9 @@ export default function App() {
     text: string,
     id: string,
   ) => {
-    setCards([...cards, { listId, text, id }]);
+    const newCards = [...cards, { listId, text, id }];
+    setCards(newCards);
+    ls.set('cards', newCards);
   };
 
   const handleRemoveCard = (listId: string, id: string) => {
