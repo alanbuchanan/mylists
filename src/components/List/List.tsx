@@ -110,7 +110,6 @@ const List: FunctionComponent<IListProps> = ({
                         key={post.id}
                         text={post.text}
                         id={post.id}
-                        listId={list.id}
                         cardsDispatch={cardsDispatch}
                       />
                     </div>

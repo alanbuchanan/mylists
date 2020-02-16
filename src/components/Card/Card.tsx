@@ -4,7 +4,6 @@ import { Container, Left, Right, SaveButton } from './Card.styles';
 interface ICard {
   text: string;
   id: string;
-  listId: string;
   cardsDispatch: any;
 }
 
@@ -12,10 +11,8 @@ const Card: FunctionComponent<ICard> = ({
   text,
   id,
   cardsDispatch,
-  listId,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [editValue, setEditValue] = useState(text);
   const onDeleteClick = () => {
     cardsDispatch({ type: 'REMOVE', payload: { id } });
   };

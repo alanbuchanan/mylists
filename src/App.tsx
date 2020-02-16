@@ -14,8 +14,8 @@ import { cardsReducer, listsReducer } from './reducers';
 import { IList, ICard } from './models';
 import { initialCards, initialLists } from './utils';
 import { Container, Lists, NewListButton } from './App.styles';
-import './styles.css';
 import { reorder } from './utils';
+import './styles.css';
 
 export default function App() {
   const listsFromLs = ls.get<IList[]>('lists');
@@ -39,22 +39,11 @@ export default function App() {
   useEffect(() => {
     ls.set<ICard[]>('cards', cards);
     ls.set<IList[]>('lists', lists);
-    console.log('cards or lists changed');
   }, [cards, lists]);
 
   const handleBgColorChange = (color: { hex: string }) => {
     setBgColor(color.hex);
     ls.set<string>('bgColor', color.hex);
-  };
-
-  const updateCardsAfterReorder = (
-    reorderedCards: ICard[],
-    listId: string,
-  ) => {
-    cardsDispatch({
-      type: 'REORDER',
-      payload: { listId, reorderedCards },
-    });
   };
 
   const onDragEnd = useCallback(
@@ -143,12 +132,13 @@ export default function App() {
       <Options handleBgColorChange={handleBgColorChange} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Lists>
-          {lists.map((list: any) => (
+          {lists.map((list: IList) => (
             <List
               key={list.id}
               list={list}
-              cards={cards.filter(card => card.listId === list.id)}
-              updateCardsAfterReorder={updateCardsAfterReorder}
+              cards={cards.filter(
+                (card: ICard) => card.listId === list.id,
+              )}
               cardsDispatch={cardsDispatch}
               listsDispatch={listsDispatch}
             />
@@ -172,21 +162,5 @@ export default function App() {
   );
 }
 
-// basic functionality:
-// edit cards
-// edit list names
-//able to enter name when creating list
-//able to enter name when creating card
-// css
 // When list deleted, delete all cards with that listId, otherwise loads of cards hang around in localstorage
-// drag cards between lists
-// drag and drop lists
-// gitignore and readme
-// make components smaller, split into separate small components
-// work on menu
-// icons fo new list and card
-// draggable handle fix
-
-// Unit tests
 // Remove anys
-// Animations
